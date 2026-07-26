@@ -1,0 +1,4 @@
+interface:
+  display_name: "疑难 Bug 诊断与修复"
+  short_description: "以稳定反馈驱动疑难 Bug 的复现、根因定位、修复和回归验证"
+  default_prompt: "使用 $z-debug 为这个疑难 Bug 建立稳定反馈并完成修复。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "设计系统架构"
+  short_description: "确定系统边界、数据所有权、依赖方向、接口和演进条件"
+  default_prompt: "使用 $z-architecture 设计这项工作的系统边界和模块关系。"

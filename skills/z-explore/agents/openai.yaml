@@ -1,0 +1,4 @@
+interface:
+  display_name: "探索大型目标"
+  short_description: "为包含多个相互依赖未知的大型目标建立并推进决策地图"
+  default_prompt: "使用 $z-explore 为这个大型模糊目标建立并推进决策地图。"

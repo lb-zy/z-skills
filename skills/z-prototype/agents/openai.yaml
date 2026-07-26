@@ -1,0 +1,4 @@
+interface:
+  display_name: "用原型验证"
+  short_description: "制作最小一次性原型，通过真实运行回答一个具体设计问题"
+  default_prompt: "使用 $z-prototype 制作最小原型来验证这个具体设计问题。"

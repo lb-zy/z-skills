@@ -1,0 +1,4 @@
+interface:
+  display_name: "澄清关键要求"
+  short_description: "只解决会改变目标、范围、行为或验收依据的关键歧义问题"
+  default_prompt: "使用 $z-clarify 澄清这项要求中会阻碍后续工作的关键问题。"

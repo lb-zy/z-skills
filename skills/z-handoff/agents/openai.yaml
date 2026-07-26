@@ -1,0 +1,4 @@
+interface:
+  display_name: "交接未完成任务"
+  short_description: "为必须更换上下文的未完成任务保存最小、可验证且可恢复的信息"
+  default_prompt: "使用 $z-handoff 为当前必须换上下文的未完成任务生成最小交接。"

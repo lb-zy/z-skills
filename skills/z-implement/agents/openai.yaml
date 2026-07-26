@@ -1,0 +1,4 @@
+interface:
+  display_name: "实现并验证任务"
+  short_description: "完成一项明确软件改动的实现、验证、质量评审与本地交付"
+  default_prompt: "使用 $z-implement 将这项明确的软件改动实现、验证并交付到本地。"

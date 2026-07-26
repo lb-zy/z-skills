@@ -1,0 +1,4 @@
+interface:
+  display_name: "整体验收"
+  short_description: "对照确认规格验收多项成果的组合路径、整体标准与剩余盲区"
+  default_prompt: "使用 $z-verify 对这项多任务软件成果执行整体验收。"

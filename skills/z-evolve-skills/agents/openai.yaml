@@ -1,0 +1,4 @@
+interface:
+  display_name: "形成与演化 Skills"
+  short_description: "从真实案例提炼、验证、采用或改进可复用的专业 Skill"
+  default_prompt: "使用 $z-evolve-skills 从真实工作案例形成或改进专业 Skill，并验证其效果。"

@@ -1,0 +1,7 @@
+interface:
+  display_name: "修复可复现 Bug"
+  short_description: "复现、修复并验证边界明确的软件缺陷，疑难问题改用系统诊断"
+  default_prompt: "使用 $fix-bug 修复这个可稳定复现且范围明确的软件缺陷。"
+
+policy:
+  allow_implicit_invocation: true
