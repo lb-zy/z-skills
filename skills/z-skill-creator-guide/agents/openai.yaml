@@ -1,0 +1,7 @@
+interface:
+  display_name: "Skill Creator 引导"
+  short_description: "补全 Skill 创建需求并调用系统 Creator 执行"
+  default_prompt: "使用 $z-skill-creator-guide 补全我的 Skill 创建需求，并调用系统 $skill-creator 完成实现与验证。"
+
+policy:
+  allow_implicit_invocation: false
