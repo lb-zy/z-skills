@@ -1,4 +1,0 @@
-interface:
-  display_name: "设计产品规则"
-  short_description: "确定需求目标、适用对象、关键场景、边界与一致产品规则"
-  default_prompt: "使用 $z-product 明确这项需求的产品目标、范围和规则。"

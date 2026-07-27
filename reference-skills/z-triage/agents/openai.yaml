@@ -1,4 +1,0 @@
-interface:
-  display_name: "分流外部输入"
-  short_description: "核实并分类外部 Issue、反馈、功能请求或代码改动并推荐处理入口"
-  default_prompt: "使用 $z-triage 整理这份外部输入并判断合适的处理入口。"

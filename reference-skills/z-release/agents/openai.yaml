@@ -1,4 +1,0 @@
-interface:
-  display_name: "发布"
-  short_description: "发布已验收成果到明确目标，并验证真实位置、版本、冒烟与恢复状态"
-  default_prompt: "使用 $z-release 将已验收成果发布到指定目标并完成真实目标验证。"

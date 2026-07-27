@@ -115,7 +115,7 @@ scripts/               # 本地维护工具
 
 ## 对 z-skills 的采用建议
 
-本项目继续以 [`README.md`](../README.md) 和 [`z-skill-creator-guide`](../skills/z-skill-creator-guide/SKILL.md) 的当前规则为准，建议使用以下单 Skill 结构：
+本项目继续以 [`README.md`](../../README.md) 和 [`z-skill-creator-guide`](../../skills/z-skill-creator-guide/SKILL.md) 的当前规则为准，建议使用以下单 Skill 结构：
 
 ```text
 skills/<skill-name>/

@@ -1,4 +1,0 @@
-interface:
-  display_name: "研究外部事实"
-  short_description: "使用可靠一手来源核对外部事实、版本条件和结论不确定性"
-  default_prompt: "使用 $z-research 核对这个外部客观问题并给出可追溯结论。"

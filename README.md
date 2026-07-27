@@ -4,7 +4,7 @@
 
 本项目只维护 Skills 及其必要资源，不提供中央路由器或固定工作流。Agent 根据用户目标和当前上下文决定是否选择及如何组合 Skills。
 
-> **项目正在重建**：只有 `skills/` 中且列入下表的内容属于当前集合；`reference-skills/` 仅供设计参考，不可直接安装或发布。
+> 只有 `skills/` 中且列入下表的内容属于当前集合。
 
 ## Skill 目录
 
@@ -28,7 +28,7 @@ cp -R "./skills/$skill_name" "${CODEX_HOME:-$HOME/.codex}/skills/"
 
 目标位置已有同名 Skill 时，先比较来源和改动再决定如何替换。安装后从目标位置重新检查文件，并在新的 Codex 任务中使用。
 
-不要把整个仓库或 `reference-skills/` 复制到运行目录。
+不要把整个仓库复制到运行目录。
 
 ### 调用
 
@@ -44,19 +44,21 @@ cp -R "./skills/$skill_name" "${CODEX_HOME:-$HOME/.codex}/skills/"
 
 ```text
 z-skills/
-├── skills/                  # 当前集合：可维护、验证和发布
-├── docs/                    # 面向维护者的设计与参考资料
-└── reference-skills/        # 临时设计参考，不属于当前集合
+├── skills/                              # 当前集合：可维护、验证和发布
+└── docs/                                # 项目级资料，不进入 Skill 运行上下文
+    ├── maintaining-skills.md            # 跨领域维护规范
+    ├── domains/                         # 各领域 Skill 集的确定设计
+    └── research/                        # 有明确来源的外部研究
 ```
 
 - [`skills/`](./skills/) 是现行 Skill 的唯一维护来源，也是发布内容的来源。
 - [`docs/`](./docs/) 解释如何设计和维护集合，不作为任何 Skill 的运行时依赖。
-- [`reference-skills/`](./reference-skills/) 只用于提取设计经验；即使名称相同，也不能直接移入 `skills/`。
 
-## 维护与参考
+## 文档
 
 - [Skill 编写与维护](./docs/maintaining-skills.md)：设计约定、单 Skill 结构、验证、发布与安装边界。
-- [`mattpocock/skills` 参考分析](./docs/mattpocock-skills.md)：外部 Skill 仓库的结构、设计模式与取舍。
+- [软件开发 Skill 集设计](./docs/domains/software-development.md)：软件开发阶段、能力范围与关键边界。
+- [`mattpocock/skills` 参考分析](./docs/research/mattpocock-skills.md)：外部 Skill 仓库的结构、设计模式与取舍。
 
 ## 许可
 

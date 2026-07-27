@@ -1,4 +1,0 @@
-interface:
-  display_name: "设计界面与交互"
-  short_description: "确定信息结构、操作、状态、响应式、视觉和无障碍要求"
-  default_prompt: "使用 $z-ui-design 设计这项功能的界面结构、交互状态和视觉方向。"

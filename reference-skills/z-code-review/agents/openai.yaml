@@ -1,4 +1,0 @@
-interface:
-  display_name: "代码评审"
-  short_description: "分别检查代码改动的要求符合度和工程质量并报告可行动缺陷"
-  default_prompt: "使用 $z-code-review 对这组代码改动执行两轴只读评审。"
