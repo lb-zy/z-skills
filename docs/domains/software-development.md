@@ -2,7 +2,7 @@
 
 本文记录软件开发 Skill 集的确定设计。正式存在的 Skill 以根目录 [`README.md`](../../README.md) 和 `skills/` 中的维护源码为准。
 
-通用维护规则见 [`maintaining-skills.md`](../maintaining-skills.md)。
+通用开发规则见 [`skill-development.md`](../skill-development.md)。
 
 ## 目标
 

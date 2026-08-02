@@ -1,6 +1,8 @@
-# Skill 编写与维护
+# Skill 开发
 
 本文面向 `z-skills` 的维护者，说明一个 Skill 从维护源码到运行副本的设计与验证约定。集合的用途、安装入口和现行 Skill 目录保留在根目录 [`README.md`](../README.md)；单个 Skill 的运行方法由它自己的 `SKILL.md` 定义。
+
+Skill 的发现与调用机制参考 Codex 文档 [Build skills](https://learn.chatgpt.com/docs/build-skills.md)。
 
 ## 内容层次
 

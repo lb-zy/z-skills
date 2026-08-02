@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI 设计"
+  short_description: "交付有证据的 UI 评审、设计方案或独立交互原型成果"
+  default_prompt: "使用 $z-ui-design 先确认当前交付分支与完成证据，再按确认范围执行。"
