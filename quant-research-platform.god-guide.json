@@ -1,0 +1,170 @@
+{
+  "version": 3,
+  "title": "量化研究平台",
+  "rootViewId": "root",
+  "views": [
+    {
+      "id": "root",
+      "title": "量化研究平台总览",
+      "layout": "tree",
+      "status": "building",
+      "interface": {
+        "inputs": [],
+        "outputs": []
+      },
+      "nodes": [
+        {
+          "id": "quant-research-platform",
+          "label": "量化研究平台",
+          "summary": "建立统一的量化研究平台",
+          "state": "confirmed",
+          "leaf": false,
+          "revision": 1,
+          "inputs": [],
+          "outputs": [],
+          "evidence": [
+            "用户明确提出“建立量化研究平台”"
+          ]
+        },
+        {
+          "id": "research-workspace",
+          "label": "研究计算环境",
+          "summary": "统一承载研究项目、交互分析和批量实验，并提供权限、调度、存储、环境与可观测性",
+          "state": "candidate",
+          "leaf": false,
+          "revision": 2,
+          "inputs": [
+            "研究问题与假设",
+            "数据和模型接口",
+            "计算、存储、安全与成本约束"
+          ],
+          "outputs": [
+            "可复现的研究项目与实验记录",
+            "受治理且可观测的研究运行环境"
+          ],
+          "evidence": [
+            "基于“量化研究平台”目标，按研究全生命周期和共享平台能力归纳"
+          ]
+        },
+        {
+          "id": "data-feature-assets",
+          "label": "数据特征资产",
+          "summary": "管理数据接入、时点一致性、质量、目录以及可复用特征",
+          "state": "candidate",
+          "leaf": false,
+          "revision": 1,
+          "inputs": [
+            "行情、基本面与参考数据",
+            "数据质量和时点规则"
+          ],
+          "outputs": [
+            "时点一致的研究数据集",
+            "可复用特征与数据质量报告"
+          ],
+          "evidence": [
+            "基于“量化研究平台”目标，按研究全生命周期归纳"
+          ]
+        },
+        {
+          "id": "strategy-portfolio-research",
+          "label": "策略组合研究",
+          "summary": "支持因子、信号、预测模型、组合优化与约束表达",
+          "state": "candidate",
+          "leaf": false,
+          "revision": 1,
+          "inputs": [
+            "研究数据与特征",
+            "投资假设与组合约束"
+          ],
+          "outputs": [
+            "信号或预测",
+            "目标持仓与策略定义"
+          ],
+          "evidence": [
+            "基于“量化研究平台”目标，按研究全生命周期归纳"
+          ]
+        },
+        {
+          "id": "backtest-risk-validation",
+          "label": "回测风险验证",
+          "summary": "评估策略表现、交易成本、稳健性、归因与风险暴露",
+          "state": "candidate",
+          "leaf": false,
+          "revision": 1,
+          "inputs": [
+            "策略定义与目标持仓",
+            "历史数据、成本和风控假设"
+          ],
+          "outputs": [
+            "回测结果与绩效归因",
+            "稳健性和风险证据"
+          ],
+          "evidence": [
+            "基于“量化研究平台”目标，按研究全生命周期归纳"
+          ]
+        },
+        {
+          "id": "research-assets-governance",
+          "label": "研究治理交付",
+          "summary": "沉淀研究资产与审计证据，并把验证通过的成果封装为可交付策略包",
+          "state": "candidate",
+          "leaf": false,
+          "revision": 2,
+          "inputs": [
+            "代码、数据、模型与验证产物",
+            "评审、合规、运行和监控要求"
+          ],
+          "outputs": [
+            "版本化且可追溯的研究资产",
+            "可部署策略包、上线门禁与监控契约"
+          ],
+          "evidence": [
+            "基于“量化研究平台”目标，按研究资产治理与研究到生产的交付边界归纳"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "platform-to-workspace",
+          "from": "quant-research-platform",
+          "to": "research-workspace",
+          "label": "能力域",
+          "state": "candidate",
+          "kind": "forward"
+        },
+        {
+          "id": "platform-to-data",
+          "from": "quant-research-platform",
+          "to": "data-feature-assets",
+          "label": "能力域",
+          "state": "candidate",
+          "kind": "forward"
+        },
+        {
+          "id": "platform-to-strategy",
+          "from": "quant-research-platform",
+          "to": "strategy-portfolio-research",
+          "label": "能力域",
+          "state": "candidate",
+          "kind": "forward"
+        },
+        {
+          "id": "platform-to-validation",
+          "from": "quant-research-platform",
+          "to": "backtest-risk-validation",
+          "label": "能力域",
+          "state": "candidate",
+          "kind": "forward"
+        },
+        {
+          "id": "platform-to-governance",
+          "from": "quant-research-platform",
+          "to": "research-assets-governance",
+          "label": "能力域",
+          "state": "candidate",
+          "kind": "forward"
+        }
+      ]
+    }
+  ]
+}

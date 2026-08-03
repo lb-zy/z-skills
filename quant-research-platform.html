@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>神引图谱</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --page: #f5f7f6;
+      --surface: #ffffff;
+      --surface-soft: #edf1ef;
+      --ink: #17201d;
+      --muted: #5c6864;
+      --line: #c9d2ce;
+      --accent: #087e73;
+      --accent-soft: #d9f1ed;
+      --candidate: #a85408;
+      --candidate-soft: #fff0dd;
+      --confirmed: #267848;
+      --confirmed-soft: #ddf1e4;
+      --review: #ae3157;
+      --review-soft: #f9dfE8;
+      --danger: #b52828;
+      --node-width: 168px;
+      --node-height: 82px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #101412;
+        --surface: #191f1c;
+        --surface-soft: #242c28;
+        --ink: #edf3f0;
+        --muted: #aab6b1;
+        --line: #3a4842;
+        --accent: #59c8bb;
+        --accent-soft: #173f3a;
+        --candidate: #f0a04c;
+        --candidate-soft: #432d18;
+        --confirmed: #71c58d;
+        --confirmed-soft: #1d3d28;
+        --review: #ed799c;
+        --review-soft: #472332;
+        --danger: #ff8a8a;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 960px;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    button {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+      outline-offset: 3px;
+    }
+
+    .app {
+      width: min(1280px, 100%);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 76px;
+      padding: 14px clamp(16px, 4vw, 36px);
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .identity {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 12px;
+    }
+
+    .mark {
+      display: grid;
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .title-group {
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      overflow-wrap: anywhere;
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+
+    .view-name {
+      margin-top: 2px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: .875rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      display: inline-grid;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .icon-button:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .icon-button:disabled {
+      cursor: default;
+      opacity: .38;
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: .8125rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      width: 7px;
+      height: 7px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+
+    .status[data-state="confirmed"] {
+      background: var(--confirmed-soft);
+      color: var(--confirmed);
+    }
+
+    .status[data-state="review"] {
+      background: var(--review-soft);
+      color: var(--review);
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      min-height: 46px;
+      padding: 8px clamp(16px, 4vw, 36px);
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+      scrollbar-width: thin;
+    }
+
+    .crumb {
+      flex: 0 0 auto;
+      padding: 4px 2px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: .875rem;
+    }
+
+    .crumb[aria-current="page"] {
+      color: var(--ink);
+      cursor: default;
+      font-weight: 500;
+    }
+
+    .crumb-separator {
+      flex: 0 0 auto;
+      margin: 0 8px;
+      color: var(--line);
+    }
+
+    main {
+      padding: clamp(16px, 4vw, 36px);
+    }
+
+    .graph-shell {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .graph {
+      position: relative;
+      width: 100%;
+      min-height: 430px;
+      transition: height 180ms ease;
+    }
+
+    .edges,
+    .nodes {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .edges {
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .edge {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 1.5;
+    }
+
+    .edge[data-state="candidate"] {
+      stroke: var(--candidate);
+      stroke-dasharray: 7 6;
+    }
+
+    .edge[data-kind="feedback"] {
+      stroke: var(--accent);
+      stroke-dasharray: 4 5;
+    }
+
+    .edge-label {
+      fill: var(--muted);
+      font-size: .75rem;
+      paint-order: stroke;
+      stroke: var(--surface);
+      stroke-width: 5px;
+      stroke-linejoin: round;
+      text-anchor: middle;
+    }
+
+    .node {
+      position: absolute;
+      display: flex;
+      width: var(--node-width);
+      height: var(--node-height);
+      padding: 11px 12px;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      overflow: hidden;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+    }
+
+    .node:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .node[data-state="candidate"] {
+      border: 2px dashed var(--candidate);
+      background: var(--candidate-soft);
+    }
+
+    .node-label {
+      display: -webkit-box;
+      width: 100%;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      font-size: .9375rem;
+      font-weight: 500;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .node-meta {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      color: var(--muted);
+      font-size: .75rem;
+      white-space: nowrap;
+    }
+
+    .node[data-state="candidate"] .node-meta {
+      color: var(--candidate);
+    }
+
+    .node-kind {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .node-open {
+      flex: 0 0 auto;
+      color: var(--accent);
+    }
+
+    .empty-view {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      padding: 28px;
+      place-items: center;
+      text-align: center;
+    }
+
+    .empty-view[hidden] {
+      display: none;
+    }
+
+    .pending-node {
+      width: min(320px, 100%);
+      padding: 22px;
+      border: 2px dashed var(--candidate);
+      border-radius: 8px;
+      background: var(--candidate-soft);
+    }
+
+    .pending-node h2 {
+      overflow-wrap: anywhere;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .pending-node p {
+      margin-top: 8px;
+      color: var(--candidate);
+      font-size: .875rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding: 12px 4px 0;
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 20px;
+      height: 12px;
+      border: 1px solid var(--ink);
+      border-radius: 3px;
+      background: var(--surface);
+    }
+
+    .legend-swatch.candidate {
+      border: 2px dashed var(--candidate);
+      background: var(--candidate-soft);
+    }
+
+    .legend-swatch.feedback {
+      height: 0;
+      border: 0;
+      border-top: 2px dashed var(--accent);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    dialog {
+      width: min(520px, calc(100% - 32px));
+      max-height: calc(100% - 32px);
+      padding: 0;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 18px 48px color-mix(in srgb, var(--ink) 24%, transparent);
+    }
+
+    dialog::backdrop {
+      background: color-mix(in srgb, var(--ink) 38%, transparent);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 18px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dialog-header h2 {
+      overflow-wrap: anywhere;
+      font-size: 1.0625rem;
+      font-weight: 500;
+    }
+
+    .dialog-body {
+      padding: 16px 18px 20px;
+    }
+
+    .dialog-summary {
+      color: var(--muted);
+    }
+
+    .facts {
+      display: grid;
+      margin: 18px 0 0;
+      grid-template-columns: minmax(92px, auto) 1fr;
+      gap: 10px 16px;
+    }
+
+    .facts dt {
+      color: var(--muted);
+    }
+
+    .facts dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .facts ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="identity">
+        <div class="mark" aria-hidden="true">神</div>
+        <div class="title-group">
+          <h1 id="map-title">神引图谱</h1>
+          <p id="view-name" class="view-name"></p>
+        </div>
+      </div>
+      <div class="actions">
+        <span id="view-status" class="status" data-state="building">构建中</span>
+        <button id="back-button" class="icon-button" type="button" aria-label="返回上一层">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+        </button>
+        <button id="home-button" class="icon-button" type="button" aria-label="返回顶层">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav id="breadcrumbs" class="breadcrumbs" aria-label="图谱层级"></nav>
+
+    <main>
+      <section class="graph-shell" aria-labelledby="view-name">
+        <div id="graph" class="graph">
+          <svg id="edges" class="edges" aria-hidden="true"></svg>
+          <div id="nodes" class="nodes"></div>
+          <div id="empty-view" class="empty-view" hidden></div>
+        </div>
+      </section>
+      <div class="legend" aria-label="图例">
+        <span class="legend-item"><span class="legend-swatch"></span>已确认</span>
+        <span class="legend-item"><span class="legend-swatch candidate"></span>候选</span>
+        <span class="legend-item"><span class="legend-swatch feedback"></span>反馈</span>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="detail-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-header">
+      <h2 id="dialog-title"></h2>
+      <button id="dialog-close" class="icon-button" type="button" aria-label="关闭详情">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div id="dialog-body" class="dialog-body"></div>
+  </dialog>
+
+  <noscript>该图谱需要启用 JavaScript 才能逐层查看。</noscript>
+
+  <script>
+    window.__GOD_GUIDE_DATA__={"version":3,"title":"量化研究平台","rootViewId":"root","views":[{"id":"root","title":"量化研究平台总览","layout":"tree","status":"building","interface":{"inputs":[],"outputs":[]},"nodes":[{"id":"quant-research-platform","label":"量化研究平台","summary":"建立统一的量化研究平台","state":"confirmed","leaf":false,"revision":1,"inputs":[],"outputs":[],"evidence":["用户明确提出“建立量化研究平台”"]},{"id":"research-workspace","label":"研究计算环境","summary":"统一承载研究项目、交互分析和批量实验，并提供权限、调度、存储、环境与可观测性","state":"candidate","leaf":false,"revision":2,"inputs":["研究问题与假设","数据和模型接口","计算、存储、安全与成本约束"],"outputs":["可复现的研究项目与实验记录","受治理且可观测的研究运行环境"],"evidence":["基于“量化研究平台”目标，按研究全生命周期和共享平台能力归纳"]},{"id":"data-feature-assets","label":"数据特征资产","summary":"管理数据接入、时点一致性、质量、目录以及可复用特征","state":"candidate","leaf":false,"revision":1,"inputs":["行情、基本面与参考数据","数据质量和时点规则"],"outputs":["时点一致的研究数据集","可复用特征与数据质量报告"],"evidence":["基于“量化研究平台”目标，按研究全生命周期归纳"]},{"id":"strategy-portfolio-research","label":"策略组合研究","summary":"支持因子、信号、预测模型、组合优化与约束表达","state":"candidate","leaf":false,"revision":1,"inputs":["研究数据与特征","投资假设与组合约束"],"outputs":["信号或预测","目标持仓与策略定义"],"evidence":["基于“量化研究平台”目标，按研究全生命周期归纳"]},{"id":"backtest-risk-validation","label":"回测风险验证","summary":"评估策略表现、交易成本、稳健性、归因与风险暴露","state":"candidate","leaf":false,"revision":1,"inputs":["策略定义与目标持仓","历史数据、成本和风控假设"],"outputs":["回测结果与绩效归因","稳健性和风险证据"],"evidence":["基于“量化研究平台”目标，按研究全生命周期归纳"]},{"id":"research-assets-governance","label":"研究治理交付","summary":"沉淀研究资产与审计证据，并把验证通过的成果封装为可交付策略包","state":"candidate","leaf":false,"revision":2,"inputs":["代码、数据、模型与验证产物","评审、合规、运行和监控要求"],"outputs":["版本化且可追溯的研究资产","可部署策略包、上线门禁与监控契约"],"evidence":["基于“量化研究平台”目标，按研究资产治理与研究到生产的交付边界归纳"]}],"edges":[{"id":"platform-to-workspace","from":"quant-research-platform","to":"research-workspace","label":"能力域","state":"candidate","kind":"forward"},{"id":"platform-to-data","from":"quant-research-platform","to":"data-feature-assets","label":"能力域","state":"candidate","kind":"forward"},{"id":"platform-to-strategy","from":"quant-research-platform","to":"strategy-portfolio-research","label":"能力域","state":"candidate","kind":"forward"},{"id":"platform-to-validation","from":"quant-research-platform","to":"backtest-risk-validation","label":"能力域","state":"candidate","kind":"forward"},{"id":"platform-to-governance","from":"quant-research-platform","to":"research-assets-governance","label":"能力域","state":"candidate","kind":"forward"}]}]};
+  </script>
+  <script>
+    (() => {
+      "use strict";
+
+      const data = window.__GOD_GUIDE_DATA__;
+      const views = new Map(data.views.map((view) => [view.id, view]));
+      const nodes = new Map();
+      const ownerByNode = new Map();
+      data.views.forEach((view) => {
+        view.nodes.forEach((node) => {
+          nodes.set(node.id, node);
+          ownerByNode.set(node.id, view.id);
+        });
+      });
+
+      const itemStateLabel = (value) => value === "candidate" ? "候选" : "已确认";
+
+      const elements = {
+        title: document.getElementById("map-title"),
+        viewName: document.getElementById("view-name"),
+        status: document.getElementById("view-status"),
+        back: document.getElementById("back-button"),
+        home: document.getElementById("home-button"),
+        breadcrumbs: document.getElementById("breadcrumbs"),
+        graph: document.getElementById("graph"),
+        edges: document.getElementById("edges"),
+        nodes: document.getElementById("nodes"),
+        empty: document.getElementById("empty-view"),
+        dialog: document.getElementById("detail-dialog"),
+        dialogTitle: document.getElementById("dialog-title"),
+        dialogBody: document.getElementById("dialog-body"),
+        dialogClose: document.getElementById("dialog-close")
+      };
+
+      const state = {
+        currentViewId: data.rootViewId,
+        pendingNodeId: null,
+        history: [],
+        positions: new Map()
+      };
+
+      const equalTextLists = (left, right) => {
+        const normalize = (values) => [...new Set(values.map((value) => value.trim()))].sort();
+        return JSON.stringify(normalize(left || [])) === JSON.stringify(normalize(right || []));
+      };
+
+      const effectiveStatus = (view) => {
+        if (!view.parentNodeId) return view.status;
+        const parent = nodes.get(view.parentNodeId);
+        if (!parent || view.parentRevision !== parent.revision) return "review";
+        if (!equalTextLists(view.interface.inputs, parent.inputs)) return "review";
+        if (!equalTextLists(view.interface.outputs, parent.outputs)) return "review";
+        return view.status;
+      };
+
+      const statusLabel = (status) => ({
+        building: "构建中",
+        confirmed: "已确认",
+        review: "待复核"
+      }[status] || "构建中");
+
+      const currentView = () => views.get(state.currentViewId);
+
+      const hierarchyPath = (viewId) => {
+        const result = [];
+        const seen = new Set();
+        let view = views.get(viewId);
+        while (view && !seen.has(view.id)) {
+          seen.add(view.id);
+          result.unshift({ viewId: view.id, label: view.title });
+          if (!view.parentNodeId) break;
+          view = views.get(ownerByNode.get(view.parentNodeId));
+        }
+        if (state.pendingNodeId) {
+          const pendingNode = nodes.get(state.pendingNodeId);
+          if (pendingNode) result.push({ viewId: null, label: pendingNode.label });
+        }
+        return result;
+      };
+
+      const navigateTo = (viewId, pendingNodeId = null, record = true) => {
+        if (record) {
+          state.history.push({
+            viewId: state.currentViewId,
+            pendingNodeId: state.pendingNodeId
+          });
+        }
+        state.currentViewId = viewId;
+        state.pendingNodeId = pendingNodeId;
+        render();
+      };
+
+      const renderBreadcrumbs = () => {
+        elements.breadcrumbs.replaceChildren();
+        const path = hierarchyPath(state.currentViewId);
+        path.forEach((entry, index) => {
+          if (index > 0) {
+            const separator = document.createElement("span");
+            separator.className = "crumb-separator";
+            separator.setAttribute("aria-hidden", "true");
+            separator.textContent = "/";
+            elements.breadcrumbs.append(separator);
+          }
+          const crumb = document.createElement("button");
+          crumb.type = "button";
+          crumb.className = "crumb";
+          crumb.textContent = entry.label;
+          if (index === path.length - 1) {
+            crumb.setAttribute("aria-current", "page");
+            crumb.disabled = true;
+          } else if (entry.viewId) {
+            crumb.addEventListener("click", () => {
+              state.history = [];
+              state.currentViewId = entry.viewId;
+              state.pendingNodeId = null;
+              render();
+            });
+          }
+          elements.breadcrumbs.append(crumb);
+        });
+      };
+
+      const addFact = (list, term, values) => {
+        if (!values || (Array.isArray(values) && values.length === 0)) return;
+        const dt = document.createElement("dt");
+        dt.textContent = term;
+        const dd = document.createElement("dd");
+        if (Array.isArray(values)) {
+          const ul = document.createElement("ul");
+          values.forEach((value) => {
+            const li = document.createElement("li");
+            li.textContent = value;
+            ul.append(li);
+          });
+          dd.append(ul);
+        } else {
+          dd.textContent = values;
+        }
+        list.append(dt, dd);
+      };
+
+      const openNodeDetails = (node) => {
+        elements.dialogTitle.textContent = node.label;
+        elements.dialogBody.replaceChildren();
+        if (node.summary) {
+          const summary = document.createElement("p");
+          summary.className = "dialog-summary";
+          summary.textContent = node.summary;
+          elements.dialogBody.append(summary);
+        }
+        const facts = document.createElement("dl");
+        facts.className = "facts";
+        addFact(facts, "状态", itemStateLabel(node.state));
+        addFact(facts, "类型", node.leaf ? "叶节点" : (node.childViewId ? "包含子图" : "待展开"));
+        addFact(facts, "输入", node.inputs);
+        addFact(facts, "输出", node.outputs);
+        addFact(facts, "依据", node.evidence);
+        elements.dialogBody.append(facts);
+        elements.dialog.showModal();
+      };
+
+      const activateNode = (node) => {
+        if (node.state === "candidate" || node.leaf) {
+          openNodeDetails(node);
+          return;
+        }
+        if (node.childViewId) {
+          navigateTo(node.childViewId);
+          return;
+        }
+        navigateTo(state.currentViewId, node.id);
+      };
+
+      const createNodeButton = (node) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "node";
+        button.dataset.nodeId = node.id;
+        button.dataset.state = node.state;
+
+        const label = document.createElement("span");
+        label.className = "node-label";
+        label.textContent = node.label;
+
+        const meta = document.createElement("span");
+        meta.className = "node-meta";
+        const kind = document.createElement("span");
+        kind.className = "node-kind";
+        kind.textContent = node.state === "candidate"
+          ? "候选"
+          : (node.leaf ? "叶节点" : (node.childViewId ? "子图" : "待展开"));
+        meta.append(kind);
+        if (node.state === "confirmed" && !node.leaf) {
+          const open = document.createElement("span");
+          open.className = "node-open";
+          open.setAttribute("aria-hidden", "true");
+          open.textContent = ">";
+          meta.append(open);
+        }
+
+        button.append(label, meta);
+        button.setAttribute(
+          "aria-label",
+          `${node.label}，${kind.textContent}${node.state === "confirmed" && !node.leaf ? "，打开内部图" : "，查看详情"}`
+        );
+        button.addEventListener("click", () => activateNode(node));
+        return button;
+      };
+
+      const graphRanks = (view) => {
+        const ids = view.nodes.map((node) => node.id);
+        const indegree = new Map(ids.map((id) => [id, 0]));
+        const outgoing = new Map(ids.map((id) => [id, []]));
+        view.edges
+          .filter((edge) => edge.kind !== "feedback")
+          .forEach((edge) => {
+            if (!indegree.has(edge.from) || !indegree.has(edge.to)) return;
+            indegree.set(edge.to, indegree.get(edge.to) + 1);
+            outgoing.get(edge.from).push(edge.to);
+          });
+        const queue = ids.filter((id) => indegree.get(id) === 0);
+        const rank = new Map(ids.map((id) => [id, 0]));
+        const order = [];
+        while (queue.length) {
+          const id = queue.shift();
+          order.push(id);
+          outgoing.get(id).forEach((next) => {
+            rank.set(next, Math.max(rank.get(next), rank.get(id) + 1));
+            indegree.set(next, indegree.get(next) - 1);
+            if (indegree.get(next) === 0) queue.push(next);
+          });
+        }
+        ids.forEach((id) => {
+          if (!order.includes(id)) order.push(id);
+        });
+        return { rank, order };
+      };
+
+      const verticalLayout = (view, width, nodeWidth, nodeHeight, padding) => {
+        const { rank, order } = graphRanks(view);
+        const groups = new Map();
+        order.forEach((id) => {
+          const level = rank.get(id) || 0;
+          if (!groups.has(level)) groups.set(level, []);
+          groups.get(level).push(id);
+        });
+        const levels = [...groups.keys()].sort((a, b) => a - b);
+        const rowGap = 74;
+        const columnGap = 34;
+        const maxColumns = Math.max(
+          1,
+          Math.floor((width - padding * 2 + columnGap) / (nodeWidth + columnGap))
+        );
+        const rows = [];
+        levels.forEach((level) => {
+          const ids = groups.get(level);
+          for (let index = 0; index < ids.length; index += maxColumns) {
+            rows.push(ids.slice(index, index + maxColumns));
+          }
+        });
+        const height = Math.max(
+          430,
+          padding * 2 + rows.length * nodeHeight + Math.max(0, rows.length - 1) * rowGap
+        );
+        const positions = new Map();
+        rows.forEach((ids, rowIndex) => {
+          const rowWidth = ids.length * nodeWidth + Math.max(0, ids.length - 1) * columnGap;
+          const startX = (width - rowWidth) / 2 + nodeWidth / 2;
+          ids.forEach((id, index) => {
+            const x = startX + index * (nodeWidth + columnGap);
+            const y = padding + nodeHeight / 2 + rowIndex * (nodeHeight + rowGap);
+            positions.set(id, { x, y });
+          });
+        });
+        return { positions, height };
+      };
+
+      const horizontalFlowLayout = (view, width, nodeWidth, nodeHeight, padding) => {
+        const { rank, order } = graphRanks(view);
+        const maxRank = Math.max(0, ...order.map((id) => rank.get(id) || 0));
+        if (maxRank === 0) {
+          return verticalLayout(view, width, nodeWidth, nodeHeight, padding);
+        }
+        const required = (maxRank + 1) * nodeWidth + maxRank * 56 + padding * 2;
+        if (required > width) {
+          return verticalLayout(view, width, nodeWidth, nodeHeight, padding);
+        }
+        const groups = new Map();
+        order.forEach((id) => {
+          const level = rank.get(id) || 0;
+          if (!groups.has(level)) groups.set(level, []);
+          groups.get(level).push(id);
+        });
+        const maxRows = Math.max(...[...groups.values()].map((items) => items.length));
+        const height = Math.max(430, padding * 2 + maxRows * nodeHeight + Math.max(0, maxRows - 1) * 46);
+        const positions = new Map();
+        groups.forEach((ids, level) => {
+          const x = padding + nodeWidth / 2 + level * ((width - padding * 2 - nodeWidth) / Math.max(1, maxRank));
+          const total = ids.length * nodeHeight + Math.max(0, ids.length - 1) * 46;
+          const start = (height - total) / 2 + nodeHeight / 2;
+          ids.forEach((id, index) => {
+            positions.set(id, { x, y: start + index * (nodeHeight + 46) });
+          });
+        });
+        return { positions, height };
+      };
+
+      const loopLayout = (view, width, nodeWidth, nodeHeight, padding) => {
+        if (view.nodes.length > 8) {
+          return verticalLayout(view, width, nodeWidth, nodeHeight, padding);
+        }
+        const height = Math.max(500, Math.min(660, width * .58));
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const radiusX = Math.max(80, width / 2 - nodeWidth / 2 - padding - 20);
+        const radiusY = Math.max(120, height / 2 - nodeHeight / 2 - padding);
+        const positions = new Map();
+        view.nodes.forEach((node, index) => {
+          const angle = -Math.PI / 2 + (Math.PI * 2 * index) / Math.max(1, view.nodes.length);
+          positions.set(node.id, {
+            x: centerX + Math.cos(angle) * radiusX,
+            y: centerY + Math.sin(angle) * radiusY
+          });
+        });
+        return { positions, height };
+      };
+
+      const freeLayout = (view, width, nodeWidth, nodeHeight, padding) => {
+        const height = Math.max(500, width * .55);
+        const usableWidth = Math.max(0, width - padding * 2 - nodeWidth);
+        const usableHeight = Math.max(0, height - padding * 2 - nodeHeight);
+        const positions = new Map();
+        view.nodes.forEach((node) => {
+          positions.set(node.id, {
+            x: padding + nodeWidth / 2 + node.x * usableWidth,
+            y: padding + nodeHeight / 2 + node.y * usableHeight
+          });
+        });
+        return { positions, height };
+      };
+
+      const calculateLayout = (view) => {
+        const width = Math.max(300, elements.graph.clientWidth);
+        const styles = getComputedStyle(document.documentElement);
+        const nodeWidth = Number.parseFloat(styles.getPropertyValue("--node-width"));
+        const nodeHeight = Number.parseFloat(styles.getPropertyValue("--node-height"));
+        const padding = 42;
+        let result;
+        if (view.layout === "loop") {
+          result = loopLayout(view, width, nodeWidth, nodeHeight, padding);
+        } else if (view.layout === "tree") {
+          result = verticalLayout(view, width, nodeWidth, nodeHeight, padding);
+        } else if (view.layout === "free") {
+          result = freeLayout(view, width, nodeWidth, nodeHeight, padding);
+        } else {
+          result = horizontalFlowLayout(view, width, nodeWidth, nodeHeight, padding);
+        }
+        return { ...result, width, nodeWidth, nodeHeight };
+      };
+
+      const boundaryPoint = (from, to, nodeWidth, nodeHeight) => {
+        const dx = to.x - from.x;
+        const dy = to.y - from.y;
+        const length = Math.hypot(dx, dy) || 1;
+        const ux = dx / length;
+        const uy = dy / length;
+        const tx = Math.abs(ux) < .0001 ? Number.POSITIVE_INFINITY : (nodeWidth / 2) / Math.abs(ux);
+        const ty = Math.abs(uy) < .0001 ? Number.POSITIVE_INFINITY : (nodeHeight / 2) / Math.abs(uy);
+        const distance = Math.min(tx, ty);
+        return { x: from.x + ux * distance, y: from.y + uy * distance };
+      };
+
+      const createSvgElement = (tag, attributes = {}) => {
+        const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+        Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+        return element;
+      };
+
+      const marker = (id, color) => {
+        const item = createSvgElement("marker", {
+          id,
+          viewBox: "0 0 10 10",
+          refX: "8",
+          refY: "5",
+          markerWidth: "6",
+          markerHeight: "6",
+          orient: "auto-start-reverse"
+        });
+        item.append(createSvgElement("path", { d: "M0 0 L10 5 L0 10 Z", fill: color }));
+        return item;
+      };
+
+      const drawEdges = (view, layout) => {
+        elements.edges.replaceChildren();
+        elements.edges.setAttribute("viewBox", `0 0 ${layout.width} ${layout.height}`);
+        const defs = createSvgElement("defs");
+        defs.append(
+          marker("arrow-confirmed", "var(--line)"),
+          marker("arrow-candidate", "var(--candidate)"),
+          marker("arrow-feedback", "var(--accent)")
+        );
+        elements.edges.append(defs);
+
+        view.edges.forEach((edge) => {
+          const fromCenter = layout.positions.get(edge.from);
+          const toCenter = layout.positions.get(edge.to);
+          if (!fromCenter || !toCenter) return;
+          const start = boundaryPoint(fromCenter, toCenter, layout.nodeWidth, layout.nodeHeight);
+          const end = boundaryPoint(toCenter, fromCenter, layout.nodeWidth, layout.nodeHeight);
+          let pathData;
+          let labelX = (start.x + end.x) / 2;
+          let labelY = (start.y + end.y) / 2 - 8;
+          if (edge.kind === "feedback") {
+            const mostlyVertical = Math.abs(end.x - start.x) < layout.nodeWidth * .7;
+            if (mostlyVertical) {
+              const sideX = Math.min(
+                layout.width - 18,
+                Math.max(start.x, end.x) + layout.nodeWidth / 2 + 34
+              );
+              pathData = `M${start.x} ${start.y} C${sideX} ${start.y} ${sideX} ${end.y} ${end.x} ${end.y}`;
+              labelX = sideX - 6;
+              labelY = (start.y + end.y) / 2 - 8;
+            } else {
+              const bend = Math.max(72, Math.abs(end.x - start.x) * .28);
+              const direction = start.y <= end.y ? -1 : 1;
+              pathData = `M${start.x} ${start.y} C${start.x} ${start.y + bend * direction} ${end.x} ${end.y + bend * direction} ${end.x} ${end.y}`;
+              labelY += bend * direction * .55;
+            }
+          } else if (view.layout === "flow") {
+            const middle = (start.x + end.x) / 2;
+            pathData = `M${start.x} ${start.y} H${middle} V${end.y} H${end.x}`;
+          } else {
+            const middleY = (start.y + end.y) / 2;
+            pathData = `M${start.x} ${start.y} C${start.x} ${middleY} ${end.x} ${middleY} ${end.x} ${end.y}`;
+          }
+          const path = createSvgElement("path", {
+            d: pathData,
+            class: "edge",
+            "data-state": edge.state,
+            "data-kind": edge.kind,
+            "marker-end": edge.kind === "feedback"
+              ? "url(#arrow-feedback)"
+              : (edge.state === "candidate" ? "url(#arrow-candidate)" : "url(#arrow-confirmed)")
+          });
+          elements.edges.append(path);
+          if (edge.label) {
+            const label = createSvgElement("text", {
+              x: String(labelX),
+              y: String(labelY),
+              class: "edge-label"
+            });
+            label.textContent = edge.label;
+            elements.edges.append(label);
+          }
+        });
+      };
+
+      const positionNodes = (view) => {
+        const layout = calculateLayout(view);
+        state.positions = layout.positions;
+        elements.graph.style.height = `${layout.height}px`;
+        elements.nodes.querySelectorAll(".node").forEach((button) => {
+          const position = layout.positions.get(button.dataset.nodeId);
+          if (!position) return;
+          button.style.left = `${position.x - layout.nodeWidth / 2}px`;
+          button.style.top = `${position.y - layout.nodeHeight / 2}px`;
+        });
+        drawEdges(view, layout);
+      };
+
+      const renderPending = (node) => {
+        elements.nodes.replaceChildren();
+        elements.edges.replaceChildren();
+        elements.empty.hidden = false;
+        elements.empty.replaceChildren();
+        const pending = document.createElement("div");
+        pending.className = "pending-node";
+        const title = document.createElement("h2");
+        title.textContent = node.label;
+        const status = document.createElement("p");
+        status.textContent = "内部图待展开";
+        pending.append(title, status);
+        elements.empty.append(pending);
+        elements.graph.style.height = "500px";
+      };
+
+      const renderView = (view) => {
+        elements.empty.hidden = true;
+        elements.empty.replaceChildren();
+        elements.nodes.replaceChildren();
+        view.nodes.forEach((node) => elements.nodes.append(createNodeButton(node)));
+        requestAnimationFrame(() => positionNodes(view));
+      };
+
+      const render = () => {
+        const view = currentView();
+        const pendingNode = state.pendingNodeId ? nodes.get(state.pendingNodeId) : null;
+        document.title = `${data.title} · ${pendingNode ? pendingNode.label : view.title}`;
+        elements.title.textContent = data.title;
+        elements.viewName.textContent = pendingNode ? pendingNode.label : view.title;
+        const status = pendingNode ? "building" : effectiveStatus(view);
+        elements.status.dataset.state = status;
+        elements.status.textContent = statusLabel(status);
+        elements.back.disabled = state.history.length === 0;
+        elements.home.disabled = state.currentViewId === data.rootViewId && !state.pendingNodeId;
+        renderBreadcrumbs();
+        if (pendingNode) renderPending(pendingNode);
+        else renderView(view);
+      };
+
+      elements.back.addEventListener("click", () => {
+        const previous = state.history.pop();
+        if (!previous) return;
+        state.currentViewId = previous.viewId;
+        state.pendingNodeId = previous.pendingNodeId;
+        render();
+      });
+
+      elements.home.addEventListener("click", () => {
+        state.history = [];
+        state.currentViewId = data.rootViewId;
+        state.pendingNodeId = null;
+        render();
+      });
+
+      elements.dialogClose.addEventListener("click", () => elements.dialog.close());
+      elements.dialog.addEventListener("click", (event) => {
+        if (event.target === elements.dialog) elements.dialog.close();
+      });
+
+      const resizeObserver = new ResizeObserver(() => {
+        if (!state.pendingNodeId) positionNodes(currentView());
+      });
+      resizeObserver.observe(elements.graph);
+
+      render();
+    })();
+  </script>
+</body>
+</html>

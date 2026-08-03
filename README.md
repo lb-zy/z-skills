@@ -11,6 +11,7 @@ Skills 按需安装和调用；Agent 基本规则通过项目根目录 `AGENTS.m
 | Skill | 用途 | 调用 |
 |---|---|---|
 | [`$z-skill-creator-guide`](./skills/z-skill-creator-guide/SKILL.md) | 确认 Skill 需求契约，再交给系统 Creator 实现并按契约验收 | 仅显式调用；确认前只读，内部依赖系统 `$skill-creator` |
+| [`$z-god-guide`](./skills/z-god-guide/SKILL.md) | 逐层澄清思路，确认候选节点并生成按实际结构布局、可下钻的离线图谱 | 可隐式或显式调用；增量确认并即时成图 |
 | [`$z-ui-design`](./skills/z-ui-design/SKILL.md) | 评审现有 UI、形成新建或重构方案，或制作独立交互原型 | 可隐式或显式调用；每个交付分支分别确认 |
 
 新增 Skill 时只需在此增加一行。复杂配置、多个使用模式或较长示例应放入独立文档，再从表中链接。

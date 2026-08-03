@@ -1,0 +1,4 @@
+interface:
+  display_name: "神引"
+  short_description: "逐层确认候选并生成按实际结构布局、可下钻的离线图谱"
+  default_prompt: "使用 $z-god-guide 把这个问题组织为可确认、可按需下钻的离线交互图谱。"
